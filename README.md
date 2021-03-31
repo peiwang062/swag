@@ -1,6 +1,6 @@
 # SWAG
 
-![cf](/Figs/pR2pRs.png)
+![pR2pRs](/Figs/pR2pRs.png)
 
 This repository contains the source code accompanying our CVPR 2021 paper.
 
