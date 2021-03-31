@@ -6,7 +6,7 @@ This repository contains the source code accompanying our CVPR 2021 paper.
 
 **Rethinking and Improving the Robustness of Image Style Transfer**  
 [Pei Wang](http://www.svcl.ucsd.edu/~peiwang), [Yijun Li](https://yijunmaverick.github.io/), [Nuno Vasconcelos](http://www.svcl.ucsd.edu/~nuno).  
-In Computer Vision and Pattern Recognition, 2021.
+In CVPR, 2021.
 
 ```
 @InProceedings{Wang_2021_CVPR,
