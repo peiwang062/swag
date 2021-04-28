@@ -9,7 +9,7 @@ This repository contains the source code accompanying our CVPR 2021 paper.
 In CVPR, 2021.
 
 ```
-@InProceedings{Wang_2021_CVPR,
+@InProceedings{wang2021rethinking,
 author = {Wang, Pei and Li, Yijun and Vasconcelos, Nuno},
 title = {Rethinking and Improving the Robustness of Image Style Transfer},
 booktitle = {The IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
