@@ -5,6 +5,7 @@ import torch
 import torch.optim as optim
 from torchvision import transforms, models
 import torch.nn as nn
+import torch.nn.functional as F
 import os
 import glob
 import cv2
@@ -15,7 +16,7 @@ global args
 args = parser.parse_args()
 
 
-gpu = '2'
+gpu = '0'
 gpu = gpu.split(',')
 os.environ['CUDA_VISIBLE_DEVICES'] = ','.join(gpu)
 os.environ['QT_QPA_PLATFORM'] = 'offscreen'
@@ -81,9 +82,12 @@ def get_features(image, model, layers=None):
                        '1': 'conv4_1',
                        '2': 'conv4_2'
                        }
-        softmax = nn.Softmax2d()
+        # softmax = nn.Softmax2d()
+
         # T = 100
         T = 1
+        alpha = 0.001
+
         features = {}
         x = image
         x = model.conv1(x)
@@ -92,9 +96,13 @@ def get_features(image, model, layers=None):
         x = model.relu(x)
         features['conv0_0'] = x
         # features['conv0_0'] = softmax(x / T)
+        # features['conv0_0'] = softmax3d(x / T)
+        # features['conv0_0'] = alpha * x
         x = model.maxpool(x)
         features['conv0_1'] = x
         # features['conv0_1'] = softmax(x / T)
+        # features['conv0_1'] = softmax3d(x / T)
+        # features['conv0_1'] = alpha * x
 
         # Although we found adding softmax smoothing can always improve the results, the best results sometimes are obtained by only smoothing the deeper layers,
         # as the paper suggests, deeper layers are more peaky and have small entropy
@@ -104,19 +112,27 @@ def get_features(image, model, layers=None):
             if str(name) in layers1:
                 features[layers1[str(name)]] = x
                 # features[layers1[str(name)]] = softmax(x / T)
+                # features[layers1[str(name)]] = softmax3d(x / T)
+                # features[layers1[str(name)]] = alpha * x
         for name, layer in enumerate(model.layer2):
             x = layer(x)
             if str(name) in layers2:
                 features[layers2[str(name)]] = x
                 # features[layers2[str(name)]] = softmax(x / T)
+                # features[layers2[str(name)]] = softmax3d(x / T)
+                # features[layers2[str(name)]] = alpha * x
         for name, layer in enumerate(model.layer3):
             x = layer(x)
             if str(name) in layers3:
-                features[layers3[str(name)]] = softmax(x / T)
+                # features[layers3[str(name)]] = softmax(x / T)
+                # features[layers3[str(name)]] = softmax3d(x / T)
+                features[layers3[str(name)]] = alpha * x
         for name, layer in enumerate(model.layer4):
             x = layer(x)
             if str(name) in layers4:
-                features[layers4[str(name)]] = softmax(x / T)
+                # features[layers4[str(name)]] = softmax(x / T)
+                # features[layers4[str(name)]] = softmax3d(x / T)
+                features[layers4[str(name)]] = alpha * x
 
     else:
         if layers is None:
@@ -170,6 +186,13 @@ def get_features(image, model, layers=None):
     return features
 
 
+def softmax3d(input):
+    m = nn.Softmax()
+    a, b, c, d = input.size()
+    input = torch.reshape(input, (1, -1))
+    output = m(input)
+    output = torch.reshape(output, (a, b, c, d))
+    return output
 
 
 def gram_matrix(input):
