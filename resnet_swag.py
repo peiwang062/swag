@@ -281,6 +281,9 @@ for file in glob.glob('./content_images/*'):
     content_image_list.append(file)
 
 for i_style in range(len(style_image_list)):
+    style_img_name = style_image_list[i_style].split('/')
+    style_img_name = style_img_name[-1].split('.')
+    style_img_name = style_img_name[0].split('\\')[-1]
     for i_content in range(len(content_image_list)):
 
         print('processing content', i_content, ' style ', i_style)
@@ -306,12 +309,9 @@ for i_style in range(len(style_image_list)):
         final_styled = style_transfer(resnet, style, content, target, style_weights, content_weights,
                                                   style_weight, content_weight, optimizer)
 
-        style_img_name = style_image_list[i_style].split('/')
-        style_img_name = style_img_name[-1].split('.')
-        style_img_name = style_img_name[0]
         content_img_name = content_image_list[i_content].split('/')
         content_img_name = content_img_name[-1].split('.')
-        content_img_name = content_img_name[0]
+        content_img_name = content_img_name[0].split('\\')[-1]
 
         if not os.path.exists('./results/' + ARCHITECTURE):
             os.makedirs('./results/' + ARCHITECTURE)
